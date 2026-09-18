@@ -1,0 +1,47 @@
+{
+  "mandatory_fields": [
+    "client_name",
+    "project_type",
+    "requirements",
+    "timeline",
+    "budget",
+    "technical_contact",
+    "expected_users"
+  ],
+
+  "skill_keywords": {
+    "salesforce": "Salesforce Specialist",
+    "crm": "Salesforce Specialist",
+    "ai": "AI Engineer",
+    "ml": "AI Engineer",
+    "machine learning": "AI Engineer",
+    "backend": "Backend Engineer",
+    "api": "Backend Engineer",
+    "frontend": "Frontend Engineer",
+    "ui": "Frontend Engineer",
+    "dashboard": "Frontend Engineer"
+  },
+
+  "high_risk_rules": [
+    "critical_skill_unavailable",
+    "timeline_too_short",
+    "multiple_fields_missing"
+  ],
+
+  "medium_risk_rules": [
+    "skill_limited_availability",
+    "tight_timeline",
+    "integration_dependency"
+  ],
+
+  "low_risk_rules": [
+    "all_skills_available",
+    "reasonable_timeline",
+    "requirements_complete"
+  ],
+
+  "timeline_thresholds": {
+    "too_short_weeks": 3,
+    "tight_weeks": 5
+  }
+}

@@ -1,0 +1,9 @@
+crewai
+litellm
+streamlit
+python-dotenv==1.0.1
+requests==2.32.3
+litellm
+fastapi
+uvicorn
+pydantic

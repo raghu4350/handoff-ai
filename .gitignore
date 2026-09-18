@@ -1,0 +1,17 @@
+# Environment variables — NEVER commit your real key
+.env
+
+# Virtual environment — too large for GitHub
+venv/
+
+# SQLite database — gets auto-created locally
+handoff.db
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# OS files
+.DS_Store
+Thumbs.db
