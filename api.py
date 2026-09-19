@@ -169,8 +169,7 @@ def parse_crewai_result(result: dict) -> dict:
         return result
         
     # 2. Check for missing critical info
-    # We must not trigger on the word 'missing' alone, because the agent often outputs 'Missing Fields: None'.
-    if "validation status: incomplete" in tasks_text or "validation status: incomplete" in final_text or "status: incomplete" in tasks_text or "status: incomplete" in final_text or "missing budget" in final_text or "missing requirements" in final_text:
+    if "status: incomplete" in tasks_text or "validation status: incomplete" in final_text or "missing budget" in final_text or "missing requirements" in final_text:
         result["custom_message"] = "Incomplete message. Deal is cancelled."
         result["custom_color"] = "amber"
         return result
