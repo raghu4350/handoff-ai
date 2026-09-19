@@ -162,13 +162,19 @@ def parse_crewai_result(result: dict) -> dict:
     final_text = str(result.get("final_result", "")).lower()
     tasks_text = str(result.get("tasks_output", "")).lower()
     
-    # 1. Check for missing critical info first
+    # 1. Check if it's explicitly not found first
+    if "client not found" in tasks_text or "not found" in final_text or "no deal found" in tasks_text:
+        result["custom_message"] = "There is no deal according to your search."
+        result["custom_color"] = "amber"
+        return result
+
+    # 2. Check for missing critical info
     if re.search(r"status:\s*incomplete", tasks_text) or re.search(r"status:\s*incomplete", final_text):
         result["custom_message"] = "Incomplete message. Deal is cancelled."
         result["custom_color"] = "amber"
         return result
 
-    # 2. Check if the AI successfully extracted a risk level (meaning it processed the manual text successfully!)
+    # 3. Check if the AI successfully extracted a risk level
     risk_match = re.search(r"risk\s*level:\s*\**\s*(high|medium|low)", final_text)
     if risk_match:
         risk_level = risk_match.group(1)
@@ -178,12 +184,6 @@ def parse_crewai_result(result: dict) -> dict:
         else:
             result["custom_message"] = "Resources confirmed. Handoff approved!"
             result["custom_color"] = "emerald"
-        return result
-
-    # 3. Fallback: If no risk level AND "not found" is in the text, it means it couldn't find a DB deal and there was no manual text provided
-    if "client not found" in tasks_text or "not found" in final_text or "no deal found" in tasks_text:
-        result["custom_message"] = "There is no deal according to your search."
-        result["custom_color"] = "amber"
         return result
 
     # 4. Ultimate fallback
