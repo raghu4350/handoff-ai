@@ -432,7 +432,7 @@ def create_project_handoff(
     }
 
     # Validate minimum required keys
-    required_keys = ["client_name", "project_type", "timeline"]
+    required_keys = ["deal_id", "client_name", "project_type", "timeline"]
     for key in required_keys:
         if key not in project_data or not project_data[key]:
             return json.dumps({

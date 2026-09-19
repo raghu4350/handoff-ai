@@ -57,21 +57,20 @@ USER INPUT:
 {user_input}
 
 YOUR JOB:
-Step 1: Read the user input and identify the client name.
-Step 2: Call the 'Get Deal Details' tool with the client name to retrieve full deal information.
-Step 3: YOU MUST call the 'Check Project Requirements' tool with the client name to validate all mandatory fields and identify REQUIRED SKILLS.
+Step 1: Read the user input to identify the client name.
+Step 2: ALWAYS call the 'Get Deal Details' tool to retrieve the deal information from the database based on the client name. Do NOT rely on manual text.
+Step 3: Call the 'Check Project Requirements' tool to validate the deal data you got from the database.
 Step 4: Review the results carefully:
         - If any mandatory fields are missing, list them clearly.
           Ask the user to provide them. Do NOT invent or assume values.
         - If all fields are present, confirm the project is ready for delivery planning.
-Step 5: Output the required skills EXACTLY as returned by the 'Check Project Requirements' tool. Do NOT guess or add extra skills.
+Step 5: Identify and list the REQUIRED SKILLS based on the project requirements.
 Step 6: Note any obvious early risks (tight timeline, complex integrations, etc.)
 
 CRITICAL RULES:
 - Never invent client name, budget, timeline, technical contact, or any other field.
-- If the client is not found in the database, report this clearly.
-- Only report what tools actually return. Do not add information from your own knowledge.
-- You MUST use the 'Check Project Requirements' tool. Do NOT manually determine required skills.
+- If the client is not found in the database, report this clearly. Do not attempt to process manual text if the client is missing.
+- Only report what tools actually return.
 """
 
     expected_output = """
