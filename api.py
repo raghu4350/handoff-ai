@@ -172,11 +172,11 @@ def parse_crewai_result(result: dict) -> dict:
     risk_match = re.search(r"risk\s*level:\s*\**\s*(high|medium|low)", final_text)
     if risk_match:
         risk_level = risk_match.group(1)
-        if risk_level in ["high", "medium"]:
-            result["custom_message"] = "Expert is not available."
+        if risk_level == "high":
+            result["custom_message"] = "Expert is not available. Deal cancelled."
             result["custom_color"] = "rose"
         else:
-            result["custom_message"] = "Low risk and available to confirm the deal."
+            result["custom_message"] = "Resources confirmed. Handoff approved!"
             result["custom_color"] = "emerald"
         return result
 
