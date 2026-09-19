@@ -163,7 +163,7 @@ def parse_crewai_result(result: dict) -> dict:
     tasks_text = str(result.get("tasks_output", "")).lower()
     
     # 1. Check for missing critical info first
-    if "status: incomplete" in tasks_text or "validation status: incomplete" in final_text or "missing budget" in final_text or "missing requirements" in final_text:
+    if re.search(r"status:\s*incomplete", tasks_text) or re.search(r"status:\s*incomplete", final_text):
         result["custom_message"] = "Incomplete message. Deal is cancelled."
         result["custom_color"] = "amber"
         return result
