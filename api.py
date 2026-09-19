@@ -164,18 +164,18 @@ def parse_crewai_result(result: dict) -> dict:
     
     # 1. Check if it's explicitly not found first
     if "client not found" in tasks_text or "not found" in final_text or "no deal found" in tasks_text:
-        result["custom_message"] = "There is no deal according to your search."
+        result["custom_message"] = "There is no deal existed in database."
         result["custom_color"] = "amber"
         return result
 
-    # 2. Check for missing critical info
-    if re.search(r"status:\s*incomplete", tasks_text) or re.search(r"status:\s*incomplete", final_text):
+    # 2. Check for missing critical info using robust regex ignoring markdown
+    if re.search(r"status[^\w]*incomplete", tasks_text) or re.search(r"status[^\w]*incomplete", final_text):
         result["custom_message"] = "Incomplete message. Deal is cancelled."
         result["custom_color"] = "amber"
         return result
 
-    # 3. Check if the AI successfully extracted a risk level
-    risk_match = re.search(r"risk\s*level:\s*\**\s*(high|medium|low)", final_text)
+    # 3. Check if the AI successfully extracted a risk level (ignoring markdown formatting)
+    risk_match = re.search(r"risk\s*level[^\w]*(high|medium|low)", final_text)
     if risk_match:
         risk_level = risk_match.group(1)
         if risk_level == "high":
@@ -186,12 +186,12 @@ def parse_crewai_result(result: dict) -> dict:
             result["custom_color"] = "emerald"
         return result
 
-    # 4. Ultimate fallback
-    if "escalat" in final_text or "unavailable" in final_text:
-         result["custom_message"] = "Expert is not available."
+    # 4. Ultimate fallback (removing 'unavailable' text match to avoid false positives)
+    if "escalat" in final_text:
+         result["custom_message"] = "Expert is not available. Deal cancelled."
          result["custom_color"] = "rose"
     else:
-         result["custom_message"] = "Low risk and available to confirm the deal."
+         result["custom_message"] = "Resources confirmed. Handoff approved!"
          result["custom_color"] = "emerald"
          
     return result
