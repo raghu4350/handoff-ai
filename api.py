@@ -162,22 +162,14 @@ def parse_crewai_result(result: dict) -> dict:
     final_text = str(result.get("final_result", "")).lower()
     tasks_text = str(result.get("tasks_output", "")).lower()
     
-    # 1. Check for Not Found
-    if "client not found" in tasks_text or "not assigned (new deal)" in tasks_text or "not assigned (intake incomplete)" in final_text:
-        result["custom_message"] = "There is no deal according to your search."
-        result["custom_color"] = "amber"
-        return result
-        
-    # 2. Check for missing critical info
+    # 1. Check for missing critical info first
     if "status: incomplete" in tasks_text or "validation status: incomplete" in final_text or "missing budget" in final_text or "missing requirements" in final_text:
         result["custom_message"] = "Incomplete message. Deal is cancelled."
         result["custom_color"] = "amber"
         return result
 
-    # 3. Accurately extract the Risk Level using regex
-    # Match patterns like "**Risk Level:** HIGH" or "Risk Level: LOW"
+    # 2. Check if the AI successfully extracted a risk level (meaning it processed the manual text successfully!)
     risk_match = re.search(r"risk\s*level:\s*\**\s*(high|medium|low)", final_text)
-    
     if risk_match:
         risk_level = risk_match.group(1)
         if risk_level in ["high", "medium"]:
@@ -186,15 +178,22 @@ def parse_crewai_result(result: dict) -> dict:
         else:
             result["custom_message"] = "Low risk and available to confirm the deal."
             result["custom_color"] = "emerald"
+        return result
+
+    # 3. Fallback: If no risk level AND "not found" is in the text, it means it couldn't find a DB deal and there was no manual text provided
+    if "client not found" in tasks_text or "not found" in final_text or "no deal found" in tasks_text:
+        result["custom_message"] = "There is no deal according to your search."
+        result["custom_color"] = "amber"
+        return result
+
+    # 4. Ultimate fallback
+    if "escalat" in final_text or "unavailable" in final_text:
+         result["custom_message"] = "Expert is not available."
+         result["custom_color"] = "rose"
     else:
-        # Fallback if the agent didn't output the strict risk level format
-        if "escalat" in final_text or "unavailable" in final_text:
-             result["custom_message"] = "Expert is not available."
-             result["custom_color"] = "rose"
-        else:
-             result["custom_message"] = "Low risk and available to confirm the deal."
-             result["custom_color"] = "emerald"
-             
+         result["custom_message"] = "Low risk and available to confirm the deal."
+         result["custom_color"] = "emerald"
+         
     return result
 
 @app.post("/api/handoff/evaluate")
